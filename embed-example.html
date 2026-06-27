@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embed example — Planning Paths Retirement Calculator</title>
+    <style>
+      body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #eef2f0; color: #0c3b36; }
+      .demo-note { max-width: 900px; margin: 18px auto; padding: 0 16px; font-size: 14px; }
+      .frame-wrap { max-width: 1180px; margin: 0 auto; padding: 0 12px 40px; }
+      iframe#pp-calc { width: 100%; border: 0; display: block; }
+      code { background: #dde7e3; padding: 1px 5px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="demo-note">
+      <strong>Embed demo / test harness.</strong> This page shows how the calculator
+      looks embedded in a dashboard (GoHighLevel, Lovable, Webflow, WordPress, etc.).
+      The iframe auto-resizes to its content — no inner scrollbar. For production,
+      change the iframe <code>src</code> to your hosted URL (e.g. the GitHub Pages link)
+      and keep <code>?embed=1</code> to hide the duplicate header.
+    </div>
+
+    <div class="frame-wrap">
+      <!-- ===== COPY FROM HERE ===== -->
+      <iframe
+        id="pp-calc"
+        src="./index.html?embed=1"
+        title="Planning Paths Retirement Calculator"
+        style="width:100%;border:0;"
+        scrolling="no"
+        loading="lazy"
+        height="2200"></iframe>
+      <script>
+        // Auto-resize the calculator iframe to its content height.
+        window.addEventListener("message", function (e) {
+          var d = e.data;
+          if (d && d.type === "pp-calc-height" && typeof d.height === "number") {
+            var f = document.getElementById("pp-calc");
+            if (f) f.style.height = d.height + "px";
+          }
+        });
+      </script>
+      <!-- ===== COPY TO HERE ===== -->
+    </div>
+  </body>
+</html>

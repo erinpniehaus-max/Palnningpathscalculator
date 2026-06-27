@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026 Contributions &amp; Gifting Calculator | Planning Paths</title>
+    <meta name="description" content="Planning Paths 2026 retirement contribution limits, SECURE 2.0 catch-up provisions, employer match, tax benefit, and gift/estate tax planning calculator." />
+    <link rel="icon" type="image/jpeg" href="./assets/planning-paths-logo-DPjQ3yIa.jpg" />
+    <style>
+      :root {
+        --pp-ink: #0c3b36; --pp-ink-2: #12534b; --pp-green: #4fae8b; --pp-green-dk: #2f8d6c;
+        --pp-bg: #f4f8f6; --pp-card: #ffffff; --pp-line: #dde7e3; --pp-muted: #5e726c;
+        --pp-warn: #b9772b; --pp-red: #c0492f;
+        --shadow: 0 1px 3px rgba(12,59,54,.08), 0 6px 24px rgba(12,59,54,.06); --r: 12px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--pp-ink); background: var(--pp-bg); line-height: 1.45; font-size: 15px; }
+      a { color: var(--pp-green-dk); }
+      header.site { background: var(--pp-card); border-bottom: 1px solid var(--pp-line); padding: 14px 20px; }
+      header.site .wrap { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      header.site img { height: 40px; width: auto; display: block; }
+      header.site .tag { color: var(--pp-muted); font-size: 13px; margin-left: auto; }
+      main { max-width: 1180px; margin: 0 auto; padding: 22px 20px 80px; }
+      h1 { font-size: 24px; margin: 6px 0 4px; }
+      h2 { font-size: 18px; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+      h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pp-green); display: inline-block; }
+      h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--pp-ink-2); margin: 18px 0 8px; }
+      p.lead { color: var(--pp-muted); max-width: 760px; margin: 0 0 18px; }
+      .grid { display: grid; gap: 18px; }
+      @media (min-width: 980px) { .cols { grid-template-columns: 380px 1fr; align-items: start; } }
+      .card { background: var(--pp-card); border: 1px solid var(--pp-line); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); }
+      .card + .card { margin-top: 18px; }
+      details.sec { border: 1px solid var(--pp-line); border-radius: 10px; margin-bottom: 10px; background: #fbfdfc; }
+      details.sec > summary { cursor: pointer; padding: 11px 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
+      details.sec > summary::-webkit-details-marker { display: none; }
+      details.sec > summary::before { content: "▸"; color: var(--pp-green-dk); transition: transform .15s; }
+      details.sec[open] > summary::before { transform: rotate(90deg); }
+      details.sec .body { padding: 4px 14px 14px; }
+      .field { margin-bottom: 11px; }
+      .field label { display: block; font-size: 12.5px; color: var(--pp-ink-2); margin-bottom: 4px; font-weight: 600; }
+      .field .hint { font-weight: 400; color: var(--pp-muted); font-size: 11.5px; }
+      .field input, .field select { width: 100%; padding: 8px 10px; border: 1px solid var(--pp-line); border-radius: 8px; font-size: 14px; color: var(--pp-ink); background: #fff; }
+      .field input:focus, .field select:focus { outline: 2px solid var(--pp-green); border-color: var(--pp-green); }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .inline-prefix { position: relative; }
+      .inline-prefix input { padding-left: 22px; }
+      .inline-prefix::before { content: "$"; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--pp-muted); font-size: 13px; }
+      .btn { background: var(--pp-green); color: #fff; border: none; border-radius: 9px; padding: 12px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; }
+      .btn:hover { background: var(--pp-green-dk); }
+      .btn.secondary { background: #eef4f1; color: var(--pp-ink); border: 1px solid var(--pp-line); }
+      .btn.secondary:hover { background: #e2ece7; }
+      .btnrow { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 6px; }
+      .cards-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+      .stat { background: linear-gradient(180deg,#f7fbf9,#fff); border: 1px solid var(--pp-line); border-radius: 10px; padding: 12px 14px; }
+      .stat .k { font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--pp-muted); }
+      .stat .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
+      .stat .s { font-size: 11.5px; color: var(--pp-muted); margin-top: 2px; }
+      table.proj { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+      table.proj th, table.proj td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--pp-line); }
+      table.proj th { background: var(--pp-ink); color: #fff; font-weight: 600; }
+      table.proj th:first-child, table.proj td:first-child { text-align: left; }
+      table.proj tbody tr:hover td { background: #f0f7f4; }
+      table.proj tr.total td { background: var(--pp-ink); color: #fff; font-weight: 700; }
+      table.proj tr.total td:first-child { color: #fff; }
+      .scroll { overflow: auto; border: 1px solid var(--pp-line); border-radius: 10px; }
+      .pill { display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .note { background: #f0f7f4; border-left: 3px solid var(--pp-green); padding: 9px 12px; border-radius: 6px; font-size: 12.5px; color: var(--pp-ink-2); margin: 4px 0 12px; }
+      .disclaimer { font-size: 12px; color: var(--pp-muted); border-top: 1px dashed var(--pp-line); margin-top: 22px; padding-top: 14px; }
+      .green { color: var(--pp-green-dk); font-weight: 600; }
+      body.embed header.site { display: none; }
+      body.embed main { padding-top: 14px; }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <img src="./assets/planning-paths-logo-DPjQ3yIa.jpg" alt="Planning Paths" />
+        <span class="tag">2026 Contributions &amp; Gifting</span>
+      </div>
+    </header>
+
+    <main>
+      <h1>2026 Retirement Contributions &amp; Gifting Calculator</h1>
+      <p class="lead">
+        Tax-deferred limits, SECURE 2.0 catch-up provisions, employer match and current-year tax benefit —
+        plus annual gift exclusion and lifetime estate &amp; gift exemption planning. Figures are 2026 (IRS
+        Notice 2025-67 / SECURE 2.0 / OBBBA).
+      </p>
+
+      <div class="grid cols">
+        <!-- INPUTS -->
+        <form id="inputs" class="card" autocomplete="off">
+          <h2><span class="dot"></span> Client Information</h2>
+
+          <div class="field">
+            <label>Filing status</label>
+            <select id="filing">
+              <option value="single">Single</option>
+              <option value="mfj" selected>Married filing jointly</option>
+              <option value="mfs">Married filing separately</option>
+              <option value="hoh">Head of household</option>
+            </select>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Your age (12/31/2026)</label><input type="number" id="age" value="55" min="18" max="100"/></div>
+            <div class="field"><label>Spouse age <span class="hint">(if any)</span></label><input type="number" id="spouseAge" value="" placeholder="—"/></div>
+          </div>
+          <div class="field"><label>Estimated MAGI</label><div class="inline-prefix"><input type="number" id="magi" value="250000" step="1000"/></div></div>
+          <div class="field"><label>Annual salary <span class="hint">(for employer match)</span></label><div class="inline-prefix"><input type="number" id="salary" value="150000" step="1000"/></div></div>
+
+          <h3>Employer 401(k) match</h3>
+          <div class="row2">
+            <div class="field"><label>Match rate % <span class="hint">50 = 50¢/$1</span></label><input type="number" id="matchRate" value="50" step="1"/></div>
+            <div class="field"><label>Cap (% of salary)</label><input type="number" id="matchCap" value="6" step="0.5"/></div>
+          </div>
+
+          <h3>Account choices</h3>
+          <div class="field">
+            <label>IRA type</label>
+            <select id="iraType"><option value="trad" selected>Traditional (deductible)</option><option value="roth">Roth</option></select>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>HSA coverage</label>
+              <select id="hsa"><option value="none">Not HSA-eligible</option><option value="self">Self-only</option><option value="family" selected>Family</option></select>
+            </div>
+            <div class="field" style="display:flex;align-items:flex-end;">
+              <label style="display:flex;align-items:center;gap:6px;font-weight:600;margin-bottom:8px;"><input type="checkbox" id="incCatchUp" checked style="width:auto;"/> Use catch-up</label>
+            </div>
+          </div>
+
+          <h2 style="margin-top:18px;"><span class="dot"></span> Gifting</h2>
+          <div class="field"><label>Number of gift recipients</label><input type="number" id="recipients" value="3" min="0" step="1"/></div>
+          <div class="field"><label>Lifetime exemption already used</label><div class="inline-prefix"><input type="number" id="lifetimeUsed" value="0" step="10000"/></div></div>
+
+          <div class="btnrow">
+            <button type="button" class="btn" id="runBtn">Calculate</button>
+            <button type="button" class="btn secondary" id="resetBtn">Reset</button>
+          </div>
+        </form>
+
+        <!-- RESULTS -->
+        <section id="results">
+          <div class="card">
+            <h2><span class="dot"></span> Your 2026 Contribution Summary</h2>
+            <div class="cards-summary" id="summaryCards"></div>
+            <div class="scroll" style="margin-top:14px;"><table class="proj" id="contribTable"></table></div>
+            <div id="contribNote"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> 2026 Gift &amp; Estate Tax Planning</h2>
+            <div class="scroll"><table class="proj" id="giftTable"></table></div>
+            <div id="giftNote"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> 2026 Federal Contribution Limits</h2>
+            <div class="scroll"><table class="proj" id="limitsTable"></table></div>
+          </div>
+
+          <div class="disclaimer" id="disclaimer"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./assets/contrib.js"></script>
+  </body>
+</html>

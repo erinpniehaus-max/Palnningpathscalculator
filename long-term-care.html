@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Long-Term Care Cost &amp; Funding Calculator | Planning Paths</title>
+    <meta name="description" content="Planning Paths long-term care calculator: project future LTC costs by care setting, factor LTC insurance benefits, inflation protection and elimination periods, and see your out-of-pocket gap and the lump sum needed today." />
+    <link rel="icon" type="image/jpeg" href="./assets/planning-paths-logo-DPjQ3yIa.jpg" />
+    <style>
+      :root {
+        --pp-ink: #0c3b36;        /* deep teal */
+        --pp-ink-2: #12534b;
+        --pp-green: #4fae8b;       /* accent green */
+        --pp-green-dk: #2f8d6c;
+        --pp-bg: #f4f8f6;
+        --pp-card: #ffffff;
+        --pp-line: #dde7e3;
+        --pp-muted: #5e726c;
+        --pp-warn: #b9772b;
+        --pp-red: #c0492f;
+        --shadow: 0 1px 3px rgba(12,59,54,.08), 0 6px 24px rgba(12,59,54,.06);
+        --r: 12px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--pp-ink);
+        background: var(--pp-bg);
+        line-height: 1.45;
+        font-size: 15px;
+      }
+      a { color: var(--pp-green-dk); }
+      header.site {
+        background: var(--pp-card);
+        border-bottom: 1px solid var(--pp-line);
+        padding: 14px 20px;
+      }
+      header.site .wrap { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      header.site img { height: 40px; width: auto; display: block; }
+      header.site .tag { color: var(--pp-muted); font-size: 13px; margin-left: auto; }
+      main { max-width: 1180px; margin: 0 auto; padding: 22px 20px 80px; }
+      h1 { font-size: 24px; margin: 6px 0 4px; }
+      h2 { font-size: 18px; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+      h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pp-green); display: inline-block; }
+      h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--pp-ink-2); margin: 18px 0 8px; }
+      p.lead { color: var(--pp-muted); max-width: 760px; margin: 0 0 18px; }
+      .grid { display: grid; gap: 18px; }
+      @media (min-width: 980px) { .cols { grid-template-columns: 380px 1fr; align-items: start; } }
+      .card {
+        background: var(--pp-card);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .card + .card { margin-top: 18px; }
+      details.sec { border: 1px solid var(--pp-line); border-radius: 10px; margin-bottom: 10px; background: #fbfdfc; }
+      details.sec > summary { cursor: pointer; padding: 11px 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
+      details.sec > summary::-webkit-details-marker { display: none; }
+      details.sec > summary::before { content: "▸"; color: var(--pp-green-dk); transition: transform .15s; }
+      details.sec[open] > summary::before { transform: rotate(90deg); }
+      details.sec .body { padding: 4px 14px 14px; }
+      .field { margin-bottom: 11px; }
+      .field label { display: block; font-size: 12.5px; color: var(--pp-ink-2); margin-bottom: 4px; font-weight: 600; }
+      .field .hint { font-weight: 400; color: var(--pp-muted); font-size: 11.5px; }
+      .field input, .field select {
+        width: 100%; padding: 8px 10px; border: 1px solid var(--pp-line); border-radius: 8px;
+        font-size: 14px; color: var(--pp-ink); background: #fff;
+      }
+      .field input:focus, .field select:focus { outline: 2px solid var(--pp-green); border-color: var(--pp-green); }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+      .inline-prefix { position: relative; }
+      .inline-prefix input { padding-left: 22px; }
+      .inline-prefix::before { content: "$"; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--pp-muted); font-size: 13px; }
+      .btn {
+        background: var(--pp-green); color: #fff; border: none; border-radius: 9px;
+        padding: 12px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+      }
+      .btn:hover { background: var(--pp-green-dk); }
+      .btn.secondary { background: #eef4f1; color: var(--pp-ink); border: 1px solid var(--pp-line); }
+      .btn.secondary:hover { background: #e2ece7; }
+      .btnrow { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 6px; }
+      .cards-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+      .stat { background: linear-gradient(180deg,#f7fbf9,#fff); border: 1px solid var(--pp-line); border-radius: 10px; padding: 12px 14px; }
+      .stat .k { font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--pp-muted); }
+      .stat .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
+      .stat .s { font-size: 11.5px; color: var(--pp-muted); margin-top: 2px; }
+      table.proj { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+      table.proj th, table.proj td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--pp-line); }
+      table.proj th { position: sticky; top: 0; background: var(--pp-ink); color: #fff; font-weight: 600; z-index: 1; }
+      table.proj th:first-child, table.proj td:first-child { text-align: left; }
+      table.proj tr.rmd-start td { background: #fff7ea; }
+      table.proj tbody tr:hover td { background: #f0f7f4; }
+      .scroll { overflow: auto; max-height: 520px; border: 1px solid var(--pp-line); border-radius: 10px; }
+      .pill { display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+      .toolbar .seg { display: inline-flex; border: 1px solid var(--pp-line); border-radius: 8px; overflow: hidden; }
+      .toolbar .seg button { border: none; background: #fff; padding: 7px 12px; cursor: pointer; font-size: 13px; color: var(--pp-ink); }
+      .toolbar .seg button.active { background: var(--pp-ink); color: #fff; }
+      .ladder { display: flex; flex-direction: column; gap: 6px; }
+      .ladder .rung { display: grid; grid-template-columns: 70px 1fr 150px; gap: 10px; align-items: center; font-size: 12.5px; }
+      .ladder .bar { height: 26px; background: #eef4f1; border-radius: 6px; position: relative; overflow: hidden; }
+      .ladder .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; }
+      .ladder .bar .rmdfill { position: absolute; top: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 4px, transparent 4px 8px); }
+      .ladder .meta { color: var(--pp-muted); text-align: right; }
+      .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--pp-muted); margin-top: 8px; }
+      .legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+      .disclaimer { font-size: 12px; color: var(--pp-muted); border-top: 1px dashed var(--pp-line); margin-top: 22px; padding-top: 14px; }
+      .note { background: #f0f7f4; border-left: 3px solid var(--pp-green); padding: 9px 12px; border-radius: 6px; font-size: 12.5px; color: var(--pp-ink-2); margin: 4px 0 12px; }
+      .accounts-add { font-size: 13px; color: var(--pp-green-dk); cursor: pointer; font-weight: 600; }
+      svg .axis { stroke: var(--pp-line); }
+      svg text { font-size: 10px; fill: var(--pp-muted); }
+      .hidden { display: none; }
+      /* embedded-in-dashboard mode (?embed=1): hide the duplicate header
+         and tighten spacing so it sits cleanly inside an iframe */
+      body.embed header.site { display: none; }
+      body.embed main { padding-top: 14px; }
+      .kvtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .kvtable td { padding: 5px 6px; border-bottom: 1px solid var(--pp-line); }
+      .kvtable td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+      .check { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; }
+      .check input { width: auto; }
+      .check label { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <img src="./assets/planning-paths-logo-DPjQ3yIa.jpg" alt="Planning Paths" />
+        <span class="tag">Long-Term Care Planning</span>
+      </div>
+    </header>
+
+    <main>
+      <h1>Long-Term Care Cost &amp; Funding Calculator</h1>
+      <p class="lead">
+        Project the future cost of long-term care &mdash; from in-home help to a nursing home &mdash;
+        adjusted for the higher inflation that care costs tend to carry. Factor in any LTC insurance
+        benefit, its inflation protection and elimination period, and see your out-of-pocket gap and the
+        lump sum you&rsquo;d need set aside today to cover it.
+      </p>
+
+      <div class="grid cols">
+        <!-- ============ INPUT COLUMN ============ -->
+        <form id="inputs" class="card" autocomplete="off">
+          <h2><span class="dot"></span> Your Inputs</h2>
+
+          <details class="sec" open>
+            <summary>Timeline &amp; care need</summary>
+            <div class="body">
+              <div class="row2">
+                <div class="field">
+                  <label>Current age</label>
+                  <input type="number" id="currentAge" value="60" min="30" max="100" />
+                </div>
+                <div class="field">
+                  <label>Age care begins</label>
+                  <input type="number" id="careStartAge" value="80" min="40" max="110" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Care duration <span class="hint">(years &mdash; average need is ~3 years)</span></label>
+                <input type="number" id="duration" value="3" min="1" max="20" step="1" />
+              </div>
+            </div>
+          </details>
+
+          <details class="sec" open>
+            <summary>Care setting &amp; cost</summary>
+            <div class="body">
+              <div class="note">Defaults are 2024 Genworth national <em>median</em> monthly costs. Choosing a setting fills the cost below &mdash; you can override it.</div>
+              <div class="field">
+                <label>Care setting</label>
+                <select id="setting"></select>
+              </div>
+              <div class="field">
+                <label>Monthly cost today</label>
+                <div class="inline-prefix"><input type="number" id="monthlyCost" value="5900" step="50" /></div>
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label>LTC cost inflation % <span class="hint">(faster than CPI)</span></label>
+                  <input type="number" id="costInflation" value="4.5" step="0.1" />
+                </div>
+                <div class="field">
+                  <label>Investment return % <span class="hint">(on earmarked assets)</span></label>
+                  <input type="number" id="returnRate" value="5" step="0.1" />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="sec" open>
+            <summary>LTC insurance</summary>
+            <div class="body">
+              <div class="note">Leave the monthly benefit at $0 if you have no LTC insurance policy.</div>
+              <div class="row2">
+                <div class="field">
+                  <label>Monthly benefit</label>
+                  <div class="inline-prefix"><input type="number" id="insBenefit" value="0" step="50" /></div>
+                </div>
+                <div class="field">
+                  <label>Benefit period <span class="hint">(years)</span></label>
+                  <input type="number" id="insYears" value="3" min="1" max="50" step="1" />
+                </div>
+              </div>
+              <div class="check">
+                <input type="checkbox" id="insLifetime" />
+                <label for="insLifetime">Lifetime / unlimited benefit (pool not capped by years)</label>
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label>Inflation protection</label>
+                  <select id="insInflation">
+                    <option value="0" selected>0% (none)</option>
+                    <option value="3">3% compound</option>
+                    <option value="5">5% compound</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Elimination period <span class="hint">(days)</span></label>
+                  <input type="number" id="insElim" value="90" min="0" max="730" step="1" />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="btnrow">
+            <button type="button" class="btn" id="runBtn">Recalculate</button>
+            <button type="button" class="btn secondary" id="resetBtn">Reset</button>
+          </div>
+        </form>
+
+        <!-- ============ RESULTS COLUMN ============ -->
+        <section id="results">
+          <div class="card">
+            <h2><span class="dot"></span> Summary</h2>
+            <div class="cards-summary" id="summaryCards">
+              <div class="stat"><div class="k">Run the calculator</div><div class="v">&mdash;</div><div class="s">Enter your details and press Recalculate.</div></div>
+            </div>
+            <div class="note" id="assumeNote" style="margin-top:14px;"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> Annual cost vs. out-of-pocket</h2>
+            <div id="charts"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> Year by year</h2>
+            <div class="note">All figures are in future (nominal) dollars at the year care is received.</div>
+            <div class="scroll"><table class="proj" id="projTable"></table></div>
+          </div>
+
+          <div class="disclaimer" id="disclaimer"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./assets/ltc.js"></script>
+  </body>
+</html>

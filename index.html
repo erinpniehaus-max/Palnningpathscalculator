@@ -1,32 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!--
-       ______                            __
-      / ____/___  ____ ___  ____  __  __/ /____  _____
-     / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
-    / /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
-    \____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
-                        /_/
-            Created with Perplexity Computer
-            https://www.perplexity.ai/computer
-    -->
-    <meta name="generator" content="Perplexity Computer">
-    <meta name="author" content="Perplexity Computer">
-    <meta property="og:see_also" content="https://www.perplexity.ai/computer">
-    <link rel="author" href="https://www.perplexity.ai/computer">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Venture Allocation Calculator | PlanningPaths</title>
-    <meta name="description" content="Calculate optimal venture capital allocation within portfolios. Adjustable net worth, risk tolerance, and age with breakeven returns and QSBS tax impact." />
-    <link rel="icon" type="image/png" href="./favicon.png" />
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script defer src="./assets/index-C583a6tT.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retirement &amp; RMD Planning Calculator | Planning Paths</title>
+    <meta name="description" content="Planning Paths retirement calculator: project balances, Social Security, pensions, rental and real estate, RMDs, inflation, and state-by-state marginal tax brackets to plan bracket-filling and Roth conversions." />
+    <link rel="icon" type="image/jpeg" href="./assets/planning-paths-logo-DPjQ3yIa.jpg" />
+    <style>
+      :root {
+        --pp-ink: #0c3b36;        /* deep teal */
+        --pp-ink-2: #12534b;
+        --pp-green: #4fae8b;       /* accent green */
+        --pp-green-dk: #2f8d6c;
+        --pp-bg: #f4f8f6;
+        --pp-card: #ffffff;
+        --pp-line: #dde7e3;
+        --pp-muted: #5e726c;
+        --pp-warn: #b9772b;
+        --pp-red: #c0492f;
+        --shadow: 0 1px 3px rgba(12,59,54,.08), 0 6px 24px rgba(12,59,54,.06);
+        --r: 12px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--pp-ink);
+        background: var(--pp-bg);
+        line-height: 1.45;
+        font-size: 15px;
+      }
+      a { color: var(--pp-green-dk); }
+      header.site {
+        background: var(--pp-card);
+        border-bottom: 1px solid var(--pp-line);
+        padding: 14px 20px;
+      }
+      header.site .wrap { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      header.site img { height: 40px; width: auto; display: block; }
+      header.site .tag { color: var(--pp-muted); font-size: 13px; margin-left: auto; }
+      main { max-width: 1180px; margin: 0 auto; padding: 22px 20px 80px; }
+      h1 { font-size: 24px; margin: 6px 0 4px; }
+      h2 { font-size: 18px; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+      h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pp-green); display: inline-block; }
+      h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--pp-ink-2); margin: 18px 0 8px; }
+      p.lead { color: var(--pp-muted); max-width: 760px; margin: 0 0 18px; }
+      .grid { display: grid; gap: 18px; }
+      @media (min-width: 980px) { .cols { grid-template-columns: 380px 1fr; align-items: start; } }
+      .card {
+        background: var(--pp-card);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .card + .card { margin-top: 18px; }
+      details.sec { border: 1px solid var(--pp-line); border-radius: 10px; margin-bottom: 10px; background: #fbfdfc; }
+      details.sec > summary { cursor: pointer; padding: 11px 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
+      details.sec > summary::-webkit-details-marker { display: none; }
+      details.sec > summary::before { content: "▸"; color: var(--pp-green-dk); transition: transform .15s; }
+      details.sec[open] > summary::before { transform: rotate(90deg); }
+      details.sec .body { padding: 4px 14px 14px; }
+      .field { margin-bottom: 11px; }
+      .field label { display: block; font-size: 12.5px; color: var(--pp-ink-2); margin-bottom: 4px; font-weight: 600; }
+      .field .hint { font-weight: 400; color: var(--pp-muted); font-size: 11.5px; }
+      .field input, .field select {
+        width: 100%; padding: 8px 10px; border: 1px solid var(--pp-line); border-radius: 8px;
+        font-size: 14px; color: var(--pp-ink); background: #fff;
+      }
+      .field input:focus, .field select:focus { outline: 2px solid var(--pp-green); border-color: var(--pp-green); }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+      .inline-prefix { position: relative; }
+      .inline-prefix input { padding-left: 22px; }
+      .inline-prefix::before { content: "$"; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--pp-muted); font-size: 13px; }
+      .btn {
+        background: var(--pp-green); color: #fff; border: none; border-radius: 9px;
+        padding: 12px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+      }
+      .btn:hover { background: var(--pp-green-dk); }
+      .btn.secondary { background: #eef4f1; color: var(--pp-ink); border: 1px solid var(--pp-line); }
+      .btn.secondary:hover { background: #e2ece7; }
+      .btnrow { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 6px; }
+      .cards-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+      .stat { background: linear-gradient(180deg,#f7fbf9,#fff); border: 1px solid var(--pp-line); border-radius: 10px; padding: 12px 14px; }
+      .stat .k { font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--pp-muted); }
+      .stat .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
+      .stat .s { font-size: 11.5px; color: var(--pp-muted); margin-top: 2px; }
+      table.proj { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+      table.proj th, table.proj td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--pp-line); }
+      table.proj th { position: sticky; top: 0; background: var(--pp-ink); color: #fff; font-weight: 600; z-index: 1; }
+      table.proj th:first-child, table.proj td:first-child { text-align: left; }
+      table.proj tr.rmd-start td { background: #fff7ea; }
+      table.proj tbody tr:hover td { background: #f0f7f4; }
+      .scroll { overflow: auto; max-height: 520px; border: 1px solid var(--pp-line); border-radius: 10px; }
+      .pill { display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+      .toolbar .seg { display: inline-flex; border: 1px solid var(--pp-line); border-radius: 8px; overflow: hidden; }
+      .toolbar .seg button { border: none; background: #fff; padding: 7px 12px; cursor: pointer; font-size: 13px; color: var(--pp-ink); }
+      .toolbar .seg button.active { background: var(--pp-ink); color: #fff; }
+      .ladder { display: flex; flex-direction: column; gap: 6px; }
+      .ladder .rung { display: grid; grid-template-columns: 70px 1fr 150px; gap: 10px; align-items: center; font-size: 12.5px; }
+      .ladder .bar { height: 26px; background: #eef4f1; border-radius: 6px; position: relative; overflow: hidden; }
+      .ladder .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; }
+      .ladder .bar .rmdfill { position: absolute; top: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 4px, transparent 4px 8px); }
+      .ladder .meta { color: var(--pp-muted); text-align: right; }
+      .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--pp-muted); margin-top: 8px; }
+      .legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+      .disclaimer { font-size: 12px; color: var(--pp-muted); border-top: 1px dashed var(--pp-line); margin-top: 22px; padding-top: 14px; }
+      .note { background: #f0f7f4; border-left: 3px solid var(--pp-green); padding: 9px 12px; border-radius: 6px; font-size: 12.5px; color: var(--pp-ink-2); margin: 4px 0 12px; }
+      .accounts-add { font-size: 13px; color: var(--pp-green-dk); cursor: pointer; font-weight: 600; }
+      svg .axis { stroke: var(--pp-line); }
+      svg text { font-size: 10px; fill: var(--pp-muted); }
+      .hidden { display: none; }
+      /* embedded-in-dashboard mode (?embed=1): hide the duplicate header
+         and tighten spacing so it sits cleanly inside an iframe */
+      body.embed header.site { display: none; }
+      body.embed main { padding-top: 14px; }
+      .kvtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .kvtable td { padding: 5px 6px; border-bottom: 1px solid var(--pp-line); }
+      .kvtable td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <header class="site">
+      <div class="wrap">
+        <img src="./assets/planning-paths-logo-DPjQ3yIa.jpg" alt="Planning Paths" />
+        <span class="tag">Retirement, RMD &amp; Tax-Bracket Planning</span>
+      </div>
+    </header>
+
+    <main>
+      <h1>Retirement &amp; RMD Planning Calculator</h1>
+      <p class="lead">
+        Project your retirement accounts, bank and taxable savings, real estate, rental income,
+        Social Security, pensions and other assets year by year &mdash; adjusted for inflation and
+        expected returns. See your Required Minimum Distributions (RMDs), how they land across the
+        federal tax brackets, your state marginal rate, and how much you can convert or realize to
+        &ldquo;fill up&rdquo; a target bracket.
+      </p>
+
+      <div class="grid cols">
+        <!-- ============ INPUT COLUMN ============ -->
+        <form id="inputs" class="card" autocomplete="off">
+          <h2><span class="dot"></span> Your Inputs</h2>
+
+          <details class="sec" open>
+            <summary>Household &amp; timeline</summary>
+            <div class="body">
+              <div class="row2">
+                <div class="field">
+                  <label>Current age</label>
+                  <input type="number" id="currentAge" value="62" min="30" max="100" />
+                </div>
+                <div class="field">
+                  <label>Plan through age <span class="hint">(life expectancy)</span></label>
+                  <input type="number" id="endAge" value="92" min="60" max="120" />
+                </div>
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label>Filing status</label>
+                  <select id="filing">
+                    <option value="single">Single</option>
+                    <option value="mfj" selected>Married filing jointly</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>State of residence</label>
+                  <select id="state"></select>
+                </div>
+              </div>
+              <div class="field">
+                <label>Annual spending need <span class="hint">(today's dollars, grows with inflation)</span></label>
+                <div class="inline-prefix"><input type="number" id="spending" value="80000" min="0" step="1000" /></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="sec" open>
+            <summary>Account balances &amp; expected returns</summary>
+            <div class="body">
+              <div class="note">Each account grows at its own expected return. RMDs apply only to tax-deferred accounts.</div>
+
+              <h3>Tax-deferred (401k / Traditional IRA)</h3>
+              <div class="row2">
+                <div class="field"><label>Balance</label><div class="inline-prefix"><input type="number" id="tdBal" value="900000" step="1000"/></div></div>
+                <div class="field"><label>Return %</label><input type="number" id="tdRet" value="6" step="0.1"/></div>
+              </div>
+
+              <h3>Roth (IRA / 401k) &mdash; no RMD</h3>
+              <div class="row2">
+                <div class="field"><label>Balance</label><div class="inline-prefix"><input type="number" id="rothBal" value="150000" step="1000"/></div></div>
+                <div class="field"><label>Return %</label><input type="number" id="rothRet" value="6" step="0.1"/></div>
+              </div>
+
+              <h3>Taxable brokerage &amp; bank</h3>
+              <div class="row2">
+                <div class="field"><label>Balance</label><div class="inline-prefix"><input type="number" id="taxBal" value="250000" step="1000"/></div></div>
+                <div class="field"><label>Return %</label><input type="number" id="taxRet" value="5" step="0.1"/></div>
+              </div>
+              <div class="field">
+                <label>Taxable acct yield taxed each year % <span class="hint">(interest/dividends)</span></label>
+                <input type="number" id="taxYield" value="2" step="0.1"/>
+              </div>
+            </div>
+          </details>
+
+          <details class="sec">
+            <summary>Real estate, rentals &amp; other property</summary>
+            <div class="body">
+              <h3>Real estate / rental property</h3>
+              <div class="row2">
+                <div class="field"><label>Property value</label><div class="inline-prefix"><input type="number" id="reVal" value="0" step="1000"/></div></div>
+                <div class="field"><label>Appreciation %</label><input type="number" id="reRet" value="3" step="0.1"/></div>
+              </div>
+              <div class="field">
+                <label>Net rental income / yr <span class="hint">(today's $, grows w/ inflation)</span></label>
+                <div class="inline-prefix"><input type="number" id="rentInc" value="0" step="500"/></div>
+              </div>
+              <h3>Other assets / property</h3>
+              <div class="row2">
+                <div class="field"><label>Value</label><div class="inline-prefix"><input type="number" id="otherVal" value="0" step="1000"/></div></div>
+                <div class="field"><label>Return %</label><input type="number" id="otherRet" value="2" step="0.1"/></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="sec" open>
+            <summary>Social Security, pension &amp; other income</summary>
+            <div class="body">
+              <h3>Social Security</h3>
+              <div class="row2">
+                <div class="field"><label>Annual benefit <span class="hint">(today's $)</span></label><div class="inline-prefix"><input type="number" id="ssAnnual" value="36000" step="500"/></div></div>
+                <div class="field"><label>Claiming age</label><input type="number" id="ssAge" value="67" min="62" max="70"/></div>
+              </div>
+              <div class="field" id="ss2wrap">
+                <label>Spouse Social Security / yr <span class="hint">(today's $, MFJ)</span></label>
+                <div class="inline-prefix"><input type="number" id="ssSpouse" value="18000" step="500"/></div>
+              </div>
+              <h3>Pension</h3>
+              <div class="row3">
+                <div class="field"><label>Annual <span class="hint">today's $</span></label><div class="inline-prefix"><input type="number" id="penAnnual" value="0" step="500"/></div></div>
+                <div class="field"><label>Start age</label><input type="number" id="penAge" value="65"/></div>
+                <div class="field"><label>COLA %</label><input type="number" id="penCola" value="0" step="0.1"/></div>
+              </div>
+              <h3>Other income</h3>
+              <div class="field"><label>Other taxable income / yr <span class="hint">today's $</span></label><div class="inline-prefix"><input type="number" id="otherInc" value="0" step="500"/></div></div>
+            </div>
+          </details>
+
+          <details class="sec">
+            <summary>Charitable giving &amp; Medicare (IRMAA)</summary>
+            <div class="body">
+              <div class="field">
+                <label>Annual charitable giving <span class="hint">(today's $, grows w/ inflation)</span></label>
+                <div class="inline-prefix"><input type="number" id="charitable" value="0" step="500"/></div>
+              </div>
+              <div class="field">
+                <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+                  <input type="checkbox" id="useQCD" checked style="width:auto;"/>
+                  Fund giving via QCD when eligible (70½+)
+                </label>
+                <span class="hint">Qualified Charitable Distributions come straight from your IRA, count toward your RMD, and are excluded from taxable income — lowering your bracket and IRMAA.</span>
+              </div>
+              <div class="field">
+                <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+                  <input type="checkbox" id="includeIRMAA" checked style="width:auto;"/>
+                  Model Medicare IRMAA surcharges (65+)
+                </label>
+                <span class="hint">Adds Part B/D premium surcharges that kick in when MAGI (driven by RMDs) crosses each tier.</span>
+              </div>
+            </div>
+          </details>
+
+          <details class="sec" open>
+            <summary>Assumptions &amp; planning levers</summary>
+            <div class="body">
+              <div class="row2">
+                <div class="field"><label>Inflation %</label><input type="number" id="inflation" value="2.7" step="0.1"/></div>
+                <div class="field">
+                  <label>Bracket-fill target <span class="hint">(for RMD/Roth)</span></label>
+                  <select id="fillTarget">
+                    <option value="0.10">10%</option>
+                    <option value="0.12" selected>12%</option>
+                    <option value="0.22">22%</option>
+                    <option value="0.24">24%</option>
+                    <option value="0.32">32%</option>
+                    <option value="0.35">35%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label>Override state marginal rate % <span class="hint">(blank = use built-in)</span></label>
+                <input type="number" id="stateOverride" placeholder="auto" step="0.01"/>
+              </div>
+            </div>
+          </details>
+
+          <div class="btnrow">
+            <button type="button" class="btn" id="runBtn">Calculate plan</button>
+            <button type="button" class="btn secondary" id="resetBtn">Reset</button>
+          </div>
+        </form>
+
+        <!-- ============ RESULTS COLUMN ============ -->
+        <section id="results">
+          <div class="card">
+            <h2><span class="dot"></span> Summary</h2>
+            <div class="cards-summary" id="summaryCards">
+              <div class="stat"><div class="k">Run the calculator</div><div class="v">&mdash;</div><div class="s">Enter your details and press Calculate.</div></div>
+            </div>
+            <div class="toolbar" style="margin-top:14px;">
+              <span style="font-size:12.5px;color:var(--pp-muted);">Show dollars as:</span>
+              <div class="seg" id="dollarMode">
+                <button data-mode="real" class="active">Today's dollars</button>
+                <button data-mode="nominal">Future (nominal)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="bracketCard">
+            <h2><span class="dot"></span> RMD &amp; tax-bracket analysis</h2>
+            <div class="toolbar">
+              <span style="font-size:12.5px;color:var(--pp-muted);">Analysis year:</span>
+              <select id="bracketYear" class="field" style="width:auto;min-width:170px;"></select>
+            </div>
+            <div id="bracketSummary"></div>
+            <h3>Where your income lands in the federal brackets</h3>
+            <div class="ladder" id="bracketLadder"></div>
+            <div class="legend">
+              <span style="--c:var(--pp-green);"><i style="background:var(--pp-green)"></i></span>
+            </div>
+            <h3 style="margin-top:18px;">Headroom &mdash; realize / convert up to top of each bracket</h3>
+            <div class="scroll" style="max-height:none;"><table class="proj" id="headroomTable"></table></div>
+          </div>
+
+          <div class="card" id="rothCard">
+            <h2><span class="dot"></span> Should you convert to a Roth?</h2>
+            <div id="rothAnalysis"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> Net worth &amp; income over time</h2>
+            <div id="charts"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="dot"></span> Your Planning Path &mdash; year by year</h2>
+            <div class="note">Highlighted row = first year RMDs begin. Toggle today's vs future dollars above.</div>
+            <div class="scroll"><table class="proj" id="projTable"></table></div>
+          </div>
+
+          <div class="disclaimer" id="disclaimer"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./assets/app.js"></script>
   </body>
 </html>
